@@ -29,9 +29,8 @@ const DESTINO_4 = "SALTA";
 const DESTINO_5 = "NEUQUEN";
 
 class vuelo {
-    constructor(nombre, dni, origen, destino, estadia, pasajeros, precio) {
+    constructor(nombre, origen, destino, estadia, pasajeros, precio) {
         this.nombre = nombre.toUpperCase();
-        this.dni = dni;
         this.origen = origen.toUpperCase();
         this.destino = destino.toUpperCase();
         this.estadia = estadia;
@@ -42,19 +41,38 @@ class vuelo {
         if (this.origen == ORIGEN_1) {
             switch (this.destino) {
                 case DESTINO_1:
-                    this.precio = Math.round(30000 * this.pasajeros * (this.estadia * 0.1));
+                    this.precio = Math.round(30000 * this.pasajeros * (this.estadia * 0.2));
                     break;
                 case DESTINO_2:
-                    this.precio = Math.round(38000 * this.pasajeros * (this.estadia * 0.1));
+                    this.precio = Math.round(38000 * this.pasajeros * (this.estadia * 0.2));
                     break;
                 case DESTINO_3:
-                    this.precio = Math.round(50000 * this.pasajeros * (this.estadia * 0.1));
+                    this.precio = Math.round(50000 * this.pasajeros * (this.estadia * 0.2));
                     break;
                 case DESTINO_4:
-                    this.precio = Math.round(53000 * this.pasajeros * (this.estadia * 0.1));
+                    this.precio = Math.round(53000 * this.pasajeros * (this.estadia * 0.2));
                     break;
                 case DESTINO_5:
-                    this.precio = Math.round(25000 * this.pasajeros * (this.estadia * 0.1));
+                    this.precio = Math.round(25000 * this.pasajeros * (this.estadia * 0.2));
+                    break;
+            }
+        }
+        else if(this.origen == ORIGEN_2){
+            switch (this.destino) {
+                case DESTINO_1:
+                    this.precio = Math.round(27000 * this.pasajeros * (this.estadia * 0.1));
+                    break;
+                case DESTINO_2:
+                    this.precio = Math.round(31000 * this.pasajeros * (this.estadia * 0.1));
+                    break;
+                case DESTINO_3:
+                    this.precio = Math.round(45000 * this.pasajeros * (this.estadia * 0.1));
+                    break;
+                case DESTINO_4:
+                    this.precio = Math.round(50000 * this.pasajeros * (this.estadia * 0.1));
+                    break;
+                case DESTINO_5:
+                    this.precio = Math.round(27000 * this.pasajeros * (this.estadia * 0.1));
                     break;
             }
         }
@@ -81,7 +99,7 @@ function main() {
             ver();
             break;
         case 3: //Editar
-
+            
             break;
         case 4: //Borrar
 
@@ -102,7 +120,7 @@ function ver() {
     switch (opc) {
         case 1:     //Ver todos los vuelos.
             for (const vuelo of vuelos) {
-                alert("Titular: " + vuelo.nombre + "\nD.N.I: " + vuelo.dni + "\nEstadia: " + vuelo.estadia + "\nCantidad de Pasajeros: " + vuelo.pasajeros + "\nTotal del Viaje: $" + vuelo.precio);
+                alert("Titular: " + vuelo.nombre + "\nD.N.I: " + vuelo.dni + "\nOrigen: " + vuelo.origen + "\nDestino: " + vuelo.destino + "\nEstadia: " + vuelo.estadia + "\nCantidad de Pasajeros: " + vuelo.pasajeros + "\nTotal del Viaje: $" + vuelo.precio);
             }
             break;
         case 2:     //mas barato al mas caro
@@ -118,12 +136,11 @@ function ver() {
                 }
             });
             for (const vuelo of vuelos) {
-                alert("Titular: " + vuelo.nombre + "\nD.N.I: " + vuelo.dni + "\nEstadia: " + vuelo.estadia + "\nCantidad de Pasajeros: " + vuelo.pasajeros + "\nTotal del Viaje: $" + vuelo.precio);
+                alert("Titular: " + vuelo.nombre + "\nD.N.I: " + vuelo.dni + "\nOrigen: " + vuelo.origen + "\nDestino: " + vuelo.destino + "\nEstadia: " + vuelo.estadia + "\nCantidad de Pasajeros: " + vuelo.pasajeros + "\nTotal del Viaje: $" + vuelo.precio);
             }
             break;
         case 3:     //titular
-            nombreFn();
-            
+            nombreFn();  
             break;
         case 4:     //Por destino
 
@@ -143,22 +160,22 @@ function nombreFn() {
         filNombre = prompt("Ingrese un titular.\nTitulares: " + nombres.join(", ")).toUpperCase();
     } while (!nombres.includes(filNombre));
 
-    const filtrado = vuelos.filter(e => e.nombre === filNombre);
-    console.log(filtrado);
-    alert(filtrado.nombre);
+    const arr_filtrado = vuelos.filter(e => e.nombre.includes(filNombre));
+    for (const filtrado of arr_filtrado) {
+        alert("Titular: " + filtrado.nombre + "\nD.N.I: " + filtrado.dni + "\nOrigen: " + filtrado.origen + "\nDestino: " + filtrado.destino + "\nEstadia: " + filtrado.estadia + "\nCantidad de Pasajeros: " + filtrado.pasajeros + "\nTotal del Viaje: $" + filtrado.precio);
+    }
 }
 
 function crear() {
-    let nombre, dni, estadia, pasajeros, precio = 0;
+    let nombre, origen, destino, estadia, pasajeros, precio = 0;
     do {
         nombre = ingreseNombre();
-        dni = ingreseDni();
         origen = ingreseOrigen();
         destino = ingreseDestino();
         estadia = ingreseEstadia();
         pasajeros = ingresePasajeros();
 
-        vuelos.push(new vuelo(nombre, dni, origen, destino, estadia, pasajeros, precio));
+        vuelos.push(new vuelo(nombre, origen, destino, estadia, pasajeros, precio));
 
     } while (confirm("Quiere seguir agregando Vuelos?"));
 }
@@ -177,14 +194,6 @@ function crudfn() {
 function ingreseNombre() {
     let nombre = prompt("Ingrese nombre y apellido del titular de la reserva.");
     return nombre;
-}
-
-function ingreseDni() {
-    let dni;
-    do {
-        dni = parseInt(prompt("Ingrese D.N.I del titular."));
-    } while ((isNaN(dni)) || dni < 5000000);
-    return dni
 }
 
 function ingreseOrigen() {
@@ -243,7 +252,10 @@ function ingreseEstadia() {
 }
 
 function ingresePasajeros() {
-    let pasajeros = prompt("Ingresar la cantidad de pasajeros:");
+    let pasajeros;
+    do {
+        pasajeros = parseInt(prompt("Ingrese cantidad de Pasajeros:"));
+    } while (pasajeros <= 0 || isNaN(pasajeros));
     return pasajeros;
 }
 
