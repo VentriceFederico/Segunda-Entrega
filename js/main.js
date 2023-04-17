@@ -29,13 +29,14 @@ const DESTINO_4 = "SALTA";
 const DESTINO_5 = "NEUQUEN";
 
 class vuelo {
-    constructor(nombre, origen, destino, estadia, pasajeros, precio) {
+    constructor(nombre, origen, destino, estadia, pasajeros, precio, id) {
         this.nombre = nombre.toUpperCase();
         this.origen = origen.toUpperCase();
         this.destino = destino.toUpperCase();
         this.estadia = estadia;
         this.pasajeros = pasajeros;
         this.precio = precio;
+        this.id = id;
     }
     vueloPrecio() {
         if (this.origen == ORIGEN_1) {
@@ -99,7 +100,7 @@ function main() {
             ver();
             break;
         case 3: //Editar
-            
+            editar();
             break;
         case 4: //Borrar
 
@@ -108,6 +109,17 @@ function main() {
             break;
     }
 
+}
+
+function editar(){
+    let idSelec, edit;
+    do {
+        idSelec = parseInt(prompt("Elija id del vuelo a editar:"));
+    } while (idSelec <= 0 || isNaN(idSelec));
+
+    edit = parseInt(prompt("Que desea editar:\n1-Titular\n2-Origen\n3-Destino\n4-Estadia\n5-Pasajeros"));
+
+    
 }
 
 function ver() {
@@ -120,7 +132,7 @@ function ver() {
     switch (opc) {
         case 1:     //Ver todos los vuelos.
             for (const vuelo of vuelos) {
-                alert("Titular: " + vuelo.nombre + "\nD.N.I: " + vuelo.dni + "\nOrigen: " + vuelo.origen + "\nDestino: " + vuelo.destino + "\nEstadia: " + vuelo.estadia + "\nCantidad de Pasajeros: " + vuelo.pasajeros + "\nTotal del Viaje: $" + vuelo.precio);
+                alert("Titular: " + vuelo.nombre + "\nOrigen: " + vuelo.origen + "\nDestino: " + vuelo.destino + "\nEstadia: " + vuelo.estadia + "\nCantidad de Pasajeros: " + vuelo.pasajeros + "\nTotal del Viaje: $" + vuelo.precio + "\nId: " + vuelo.id);
             }
             break;
         case 2:     //mas barato al mas caro
@@ -136,38 +148,64 @@ function ver() {
                 }
             });
             for (const vuelo of vuelos) {
-                alert("Titular: " + vuelo.nombre + "\nD.N.I: " + vuelo.dni + "\nOrigen: " + vuelo.origen + "\nDestino: " + vuelo.destino + "\nEstadia: " + vuelo.estadia + "\nCantidad de Pasajeros: " + vuelo.pasajeros + "\nTotal del Viaje: $" + vuelo.precio);
+                alert("Titular: " + vuelo.nombre + "\nOrigen: " + vuelo.origen + "\nDestino: " + vuelo.destino + "\nEstadia: " + vuelo.estadia + "\nCantidad de Pasajeros: " + vuelo.pasajeros + "\nTotal del Viaje: $" + vuelo.precio + "\nId: " + vuelo.id);
             }
             break;
         case 3:     //titular
-            nombreFn();  
+            filtrado_titular();  
             break;
         case 4:     //Por destino
-
+            filtrado_destino();
             break;
         case 5:     //Por origen
-
+            filtrado_origen();
             break;
         default:
             break;
     }
 }
 
-function nombreFn() {
-    const nombres = vuelos.map((e) => e.nombre);
+function filtrado_origen(){
+    const origenes = vuelos.map( (e) => e.origen );
+    let filOrigen;
+    do {
+        filOrigen = prompt("Ingrese destino.\nOps:\n" + origenes.join(", ")).toUpperCase();
+    } while (!origenes.includes(filOrigen));
 
+    const arr_filtrado = vuelos.filter(e => e.origen.includes(filOrigen));
+    for (const filtrado of arr_filtrado) {
+        alert("Titular: " + filtrado.nombre + "\nOrigen: " + filtrado.origen + "\nDestino: " + filtrado.destino + "\nEstadia: " + filtrado.estadia + "\nCantidad de Pasajeros: " + filtrado.pasajeros + "\nTotal del Viaje: $" + filtrado.precio + "\nId: " + vuelo.id);
+    }
+}
+
+function filtrado_destino(){
+    const destinos = vuelos.map((e) => e.destino);
+    let filDestino;
+    do {
+        filDestino = prompt("Ingrese destino.\nOps:\n" + destinos.join(", ")).toUpperCase();
+    } while (!destinos.includes(filDestino));
+
+    const arr_filtrado = vuelos.filter(e => e.destino.includes(filDestino));
+    for (const filtrado of arr_filtrado) {
+        alert("Titular: " + filtrado.nombre + "\nOrigen: " + filtrado.origen + "\nDestino: " + filtrado.destino + "\nEstadia: " + filtrado.estadia + "\nCantidad de Pasajeros: " + filtrado.pasajeros + "\nTotal del Viaje: $" + filtrado.precio + "\nId: " + vuelo.id);
+    }
+}
+
+function filtrado_titular() {
+    const nombres = vuelos.map((e) => e.nombre);
+    let filNombre;
     do {
         filNombre = prompt("Ingrese un titular.\nTitulares: " + nombres.join(", ")).toUpperCase();
     } while (!nombres.includes(filNombre));
 
     const arr_filtrado = vuelos.filter(e => e.nombre.includes(filNombre));
     for (const filtrado of arr_filtrado) {
-        alert("Titular: " + filtrado.nombre + "\nD.N.I: " + filtrado.dni + "\nOrigen: " + filtrado.origen + "\nDestino: " + filtrado.destino + "\nEstadia: " + filtrado.estadia + "\nCantidad de Pasajeros: " + filtrado.pasajeros + "\nTotal del Viaje: $" + filtrado.precio);
+        alert("Titular: " + filtrado.nombre + "\nOrigen: " + filtrado.origen + "\nDestino: " + filtrado.destino + "\nEstadia: " + filtrado.estadia + "\nCantidad de Pasajeros: " + filtrado.pasajeros + "\nTotal del Viaje: $" + filtrado.precio + "\nId: " + vuelo.id);
     }
 }
 
 function crear() {
-    let nombre, origen, destino, estadia, pasajeros, precio = 0;
+    let nombre, origen, destino, estadia, pasajeros, precio = 0, id = 1;
     do {
         nombre = ingreseNombre();
         origen = ingreseOrigen();
@@ -175,8 +213,8 @@ function crear() {
         estadia = ingreseEstadia();
         pasajeros = ingresePasajeros();
 
-        vuelos.push(new vuelo(nombre, origen, destino, estadia, pasajeros, precio));
-
+        vuelos.push(new vuelo(nombre, origen, destino, estadia, pasajeros, precio, id));
+        id++;
     } while (confirm("Quiere seguir agregando Vuelos?"));
 }
 
