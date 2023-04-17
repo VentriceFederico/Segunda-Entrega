@@ -27,6 +27,7 @@ const DESTINO_2 = "MENDOZA";
 const DESTINO_3 = "SANTA CRUZ";
 const DESTINO_4 = "SALTA";
 const DESTINO_5 = "NEUQUEN";
+let id = 1;
 
 class vuelo {
     constructor(nombre, origen, destino, estadia, pasajeros, precio, id) {
@@ -58,7 +59,7 @@ class vuelo {
                     break;
             }
         }
-        else if(this.origen == ORIGEN_2){
+        else if (this.origen == ORIGEN_2) {
             switch (this.destino) {
                 case DESTINO_1:
                     this.precio = Math.round(27000 * this.pasajeros * (this.estadia * 0.1));
@@ -84,49 +85,89 @@ const vuelos = [];
 
 function main() {
 
-    crear();
+    alert("Bienvenido a 'Tu Itinerario de Vuelos'.");
 
-    crearPrecio();
+    crear();
 
     //CRUD -> Crear - Ver - Editar - Borrar.
 
     crud = crudfn();
 
-    switch (crud) {
-        case 1: //Crear
-            crear();
-            break;
-        case 2: //Leer
-            ver();
-            break;
-        case 3: //Editar
-            editar();
-            break;
-        case 4: //Borrar
-
-            break;
-        default:
-            break;
+    while (crud != 5) {
+        switch (crud) {
+            case 1: //Crear
+                crear();
+                break;
+            case 2: //Leer
+                ver();
+                break;
+            case 3: //Editar
+                editar();
+                break;
+            case 4: //Borrar
+                borrar();
+                break;
+        }
+        crud = crudfn();
     }
+
+    alert("Muchas gracias.\nQue tenga buen dia.")
+
 
 }
 
-function editar(){
-    let idSelec, edit;
+function borrar() {
+    alert("FUNCION BORRAR");
+    let idSelec;
+
+    ordenar_id();
+
+    const id_map = vuelos.map((e) => e.id);
+
     do {
-        idSelec = parseInt(prompt("Elija id del vuelo a editar:"));
-    } while (idSelec <= 0 || isNaN(idSelec));
+        idSelec = parseInt(prompt("Elija id del vuelo a borrar:\n" + "Opciones: " + id_map.join(", ")));
+    } while (!id_map.includes(idSelec));
 
-    edit = parseInt(prompt("Que desea editar:\n1-Titular\n2-Origen\n3-Destino\n4-Estadia\n5-Pasajeros"));
+    console.log(vuelos);
 
-    
+    vuelos.splice(idSelec - 1, 1);
+
+    console.log(vuelos);
+}
+
+function editar() {
+    let idSelec;
+
+    ordenar_id();
+
+    const id_map = vuelos.map((e) => e.id);
+
+
+    do {
+        idSelec = parseInt(prompt("Elija id del vuelo a editar:\n" + "Opciones: " + id_map.join(", ")));
+    } while (!id_map.includes(idSelec));
+
+    console.log(vuelos);
+
+    vuelos.splice(idSelec - 1, 1,
+        {
+            nombre: ingreseNombre(),
+            origin: ingreseOrigen(),
+            destino: ingreseDestino(),
+            estadia: ingreseEstadia(),
+            pasajeros: ingresePasajeros()
+        }
+    );
+
+    crearPrecio();
+
 }
 
 function ver() {
     let opc;
 
     do {
-        opc = parseInt(prompt("Que vuelos quiere ver:\n1-Todos los vuelos\n2-Mas barato al mas caro\n3-De un titular\n4-Por destino\n5-Por origen"));
+        opc = parseInt(prompt("Que vuelos quiere ver:\n1-Todos los vuelos\n2-Mas barato al mas caro\n3-De un titular\n4-Por destino\n5-Por origen\n6-Por Id"));
     } while ((opc <= 0 || opc > 5) || isNaN(opc));
 
     switch (opc) {
@@ -152,7 +193,7 @@ function ver() {
             }
             break;
         case 3:     //titular
-            filtrado_titular();  
+            filtrado_titular();
             break;
         case 4:     //Por destino
             filtrado_destino();
@@ -160,13 +201,30 @@ function ver() {
         case 5:     //Por origen
             filtrado_origen();
             break;
+        case 6:     //Por ID
+            ordenar_id();
+            break;
         default:
             break;
     }
 }
 
-function filtrado_origen(){
-    const origenes = vuelos.map( (e) => e.origen );
+function ordenar_id() {
+    vuelos.sort((o1, o2) => {
+        if (o1.id > o2.id) {
+            return 1;
+        }
+        else if (o1.id < o2.id) {
+            return -1;
+        }
+        else {
+            return 0;
+        }
+    })
+}
+
+function filtrado_origen() {
+    const origenes = vuelos.map((e) => e.origen);
     let filOrigen;
     do {
         filOrigen = prompt("Ingrese destino.\nOps:\n" + origenes.join(", ")).toUpperCase();
@@ -174,11 +232,11 @@ function filtrado_origen(){
 
     const arr_filtrado = vuelos.filter(e => e.origen.includes(filOrigen));
     for (const filtrado of arr_filtrado) {
-        alert("Titular: " + filtrado.nombre + "\nOrigen: " + filtrado.origen + "\nDestino: " + filtrado.destino + "\nEstadia: " + filtrado.estadia + "\nCantidad de Pasajeros: " + filtrado.pasajeros + "\nTotal del Viaje: $" + filtrado.precio + "\nId: " + vuelo.id);
+        alert("Titular: " + filtrado.nombre + "\nOrigen: " + filtrado.origen + "\nDestino: " + filtrado.destino + "\nEstadia: " + filtrado.estadia + "\nCantidad de Pasajeros: " + filtrado.pasajeros + "\nTotal del Viaje: $" + filtrado.precio + "\nId: " + filtrado.id);
     }
 }
 
-function filtrado_destino(){
+function filtrado_destino() {
     const destinos = vuelos.map((e) => e.destino);
     let filDestino;
     do {
@@ -187,7 +245,7 @@ function filtrado_destino(){
 
     const arr_filtrado = vuelos.filter(e => e.destino.includes(filDestino));
     for (const filtrado of arr_filtrado) {
-        alert("Titular: " + filtrado.nombre + "\nOrigen: " + filtrado.origen + "\nDestino: " + filtrado.destino + "\nEstadia: " + filtrado.estadia + "\nCantidad de Pasajeros: " + filtrado.pasajeros + "\nTotal del Viaje: $" + filtrado.precio + "\nId: " + vuelo.id);
+        alert("Titular: " + filtrado.nombre + "\nOrigen: " + filtrado.origen + "\nDestino: " + filtrado.destino + "\nEstadia: " + filtrado.estadia + "\nCantidad de Pasajeros: " + filtrado.pasajeros + "\nTotal del Viaje: $" + filtrado.precio + "\nId: " + filtrado.id);
     }
 }
 
@@ -200,12 +258,12 @@ function filtrado_titular() {
 
     const arr_filtrado = vuelos.filter(e => e.nombre.includes(filNombre));
     for (const filtrado of arr_filtrado) {
-        alert("Titular: " + filtrado.nombre + "\nOrigen: " + filtrado.origen + "\nDestino: " + filtrado.destino + "\nEstadia: " + filtrado.estadia + "\nCantidad de Pasajeros: " + filtrado.pasajeros + "\nTotal del Viaje: $" + filtrado.precio + "\nId: " + vuelo.id);
+        alert("Titular: " + filtrado.nombre + "\nOrigen: " + filtrado.origen + "\nDestino: " + filtrado.destino + "\nEstadia: " + filtrado.estadia + "\nCantidad de Pasajeros: " + filtrado.pasajeros + "\nTotal del Viaje: $" + filtrado.precio + "\nId: " + filtrado.id);
     }
 }
 
 function crear() {
-    let nombre, origen, destino, estadia, pasajeros, precio = 0, id = 1;
+    let nombre, origen, destino, estadia, pasajeros, precio = 0;
     do {
         nombre = ingreseNombre();
         origen = ingreseOrigen();
@@ -216,13 +274,15 @@ function crear() {
         vuelos.push(new vuelo(nombre, origen, destino, estadia, pasajeros, precio, id));
         id++;
     } while (confirm("Quiere seguir agregando Vuelos?"));
+
+    crearPrecio();
 }
 
 function crudfn() {
     let crud;
     do {
-        crud = parseInt(prompt("Desea:\n1-Crear un nuevo vuelo?\n2-Ver sus vuelos\n3-Ediar vuelo\n4-Borrar un vuelo"));
-        if (crud <= 0 || crud > 4) {
+        crud = parseInt(prompt("Desea:\n1-Crear un nuevo vuelo?\n2-Ver sus vuelos\n3-Ediar vuelo\n4-Borrar un vuelo\n5-Salir de la app."));
+        if (crud <= 0 || crud > 5) {
             crud = 0;
         }
     } while (crud == 0 || isNaN(crud));
@@ -230,7 +290,7 @@ function crudfn() {
 }
 
 function ingreseNombre() {
-    let nombre = prompt("Ingrese nombre y apellido del titular de la reserva.");
+    let nombre = prompt("Ingrese Nombre del titular de la reserva.");
     return nombre;
 }
 
